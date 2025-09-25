@@ -8,6 +8,7 @@ MDI is a cloud-based security solution that monitors on-premises Active Director
 Microsoft Defender for Identity MDI (previously called Azure Advanced Threat Protection or Azure ATP) is a Microsoft security solution that captures signals from Domain Controllers. MDI is a cloud-based security solution that leverages on-premises Active Directory signals for detecting identity attacks.
 
 Microsoft Defender for Identity works based on four security pillars:
+
 🛡️ Prevent
 - Focuses on reducing attack surfaces before threats occur.
 - Identifies vulnerabilities like exposed credentials, legacy protocols, and misconfigured domain controllers.
@@ -30,11 +31,12 @@ Microsoft Defender for Identity works based on four security pillars:
 
 Defender for Identity monitors the domain controllers by capturing and parsing network traffic and using the Windows events directly from the domain controllers. With the use of profiling, deterministic detection, machine learning, and behavioral algorithms Defender for Identity learns from the environment and enables the detection of anomalies.
 
-Defender for identity security posture assessment can detect vulnerabilities such as,
-• Exposing credentials in clear text
-• Legacy protocols in use
-• Unsecure Kerberos delegation
-• Dormant accounts in sensitive groups
+Defender for identity security posture assessment can detect vulnerabilities such as;
+
+• Exposing credentials in clear text.
+• Legacy protocols in use.
+• Unsecure Kerberos delegation.
+• Dormant accounts in sensitive groups.
 • Weaker cipher usage
 • Print spooler service in Domain controllers
 • Not managing local administrator accounts centrally (Microsoft LAPS)
@@ -43,21 +45,25 @@ Defender for identity security posture assessment can detect vulnerabilities suc
 • Unsecure Account attributes
 • Unsecure SID history attributes
 
-================================================================================================================================================================================================================
+============================================================================================================================================================================================================
 
 *****Components*****
 Defender for Identity consist of the following components:
-🧠 Microsoft 365 Defender portal: MDI is integrated into the Microsoft 365 Defender portal
-🧠 Defender for Identity sensor: Sensor is installed on Domain Controllers for monitoring all traffic
+
+🧠 Microsoft 365 Defender portal: MDI is integrated into the Microsoft 365 Defender portal.
+
+🧠 Defender for Identity sensor: Sensor is installed on Domain Controllers for monitoring all traffic.
+
 🧠 Defender for Identity cloud services: Separate environment hosted in Azure. MDI cloud service runs on Azure infra and is connected with the security graph.
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 Defender for Identity viewed from a simplified view. Image source: Microsoft
 
 <img width="1024" height="409" alt="image" src="https://github.com/user-attachments/assets/4c30cce4-70c7-4127-b6fd-6e746012f806" />
 
-=================================================================================================================================================================================================================
+=============================================================================================================================================================================================================
 
 The MDI Sensor contains a couple of core functionalities that are critical for getting MDI onboarded. The installed sensor is responsible for the following activity:
 
@@ -73,33 +79,39 @@ The MDI Sensor contains a couple of core functionalities that are critical for g
 
 6) Transfer relevant data to the Defender for Identity cloud service
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🚀 Step-by-Step: Enable Microsoft Defender for Identity
 
 *****Preparation of the environment*****
 
-================================================================================================================================================================================================================
+==============================================================================================================================================================================================================
 
 Step 1: Prepare Your Environment
 
 Licensing is user-based. Common mistake; purchase licenses based on the sensor count. Defender for Identity is user-based counted on the AzureAD users. The following licenses are available;
 I) Enterprise Mobility + Security E5/A5
+
 II) Microsoft 365 A5/ E5/ G5
+
 III) Microsoft 365 A5/ E5/ G5/ F5 Security license.
 
 - Ensure you're licensed with Microsoft 365 E5, Microsoft 365 E5 Security, or have purchased Defender for Identity as an add-on.
+
 - Confirm your domain controllers run Windows Server 2016 or later.
+
 - Enable Windows Event Forwarding and configure audit policies as per Microsoft’s recommendations here (https://learn.microsoft.com/en-us/defender-for-identity/deploy/deploy-defender-identity)
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🚀 Network
-- Sensors able to reach Defender for Identity Cloud service
-- Specific ports allowed from Defender for Identity sensors in the environment
-- Network Name Resolution requirements enabled
+- Sensors able to reach Defender for Identity Cloud service.
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+- Specific ports allowed from Defender for Identity sensors in the environment.
+
+- Network Name Resolution requirements enabled.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🚀Audit
 ***Enable audit policies***
@@ -118,6 +130,7 @@ On the server/Domain Controller, Go to : Computer Configuration > Policies > Win
 
 Configure the following table for success and failure:
 Audit policy	Subcategory	Triggers event IDs : 
+
 🛡️ Account Logon	Audit Credential Validation	4776
 
 🛡️ Account Management	Audit Computer Account Management	4741, 4743
@@ -141,12 +154,15 @@ Example configuration for audit computer account management:
 <img width="1024" height="543" alt="image" src="https://github.com/user-attachments/assets/6b379749-5169-4746-89b6-4f68688de35f" />
 
 Event ID 8004
+
 Go to: Computer Configuration > Policies > Windows Settings > Security Settings ->Local Policies -> Security Operation
+
 <img width="1024" height="385" alt="image" src="https://github.com/user-attachments/assets/6eafdaae-c84f-49c1-b699-1c3965e2b5ba" />
 
 Configure the following security policies:
 
 Security policy setting	Value
+
 🛡️Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers	= Audit all
 🛡️ Network security: Restrict NTLM: Audit NTLM authentication in this domain = 	Enable all
 🛡️ Network security: Restrict NTLM: Audit Incoming NTLM Traffic =	Enable auditing for all accounts
@@ -166,13 +182,16 @@ For Event 1644 is it needed to configure the following registry keys on the doma
 
 Configure object auditing – 4662 events
 For collecting 4662 events – it is needed to configure object auditing on the following objects:
+
 - Descendant Group Objects
 - Descendant User objects
 - Descendant Computer Objects
 - Descendant msDS-GroupManagedServiceAccount Objects
 - Descendant msDS-ManagedServiceAccount Objects
 
-Microsoft described the enablement for object auditing for all descendant objects. Use the Microsoft instructions for enabling the recommended set of permissions. Configure object auditing with reference to https://learn.microsoft.com/en-us/defender-for-identity/configure-windows-event-collection#configure-object-auditing
+Microsoft described the enablement for object auditing for all descendant objects. Use the Microsoft instructions for enabling the recommended set of permissions. 
+
+Configure object auditing with reference to https://learn.microsoft.com/en-us/defender-for-identity/configure-windows-event-collection#configure-object-auditing
 
 =============================================================================================================================================================================================================
 
@@ -180,6 +199,7 @@ Microsoft described the enablement for object auditing for all descendant object
 Defender for Identity requires additional permissions for allowing remote calls to SAM and permissions to the selected object’s container in AD.
 
 Configure SAM-R
+
 For lateral movement path detection, MDI relies on the SAM-R protocol configuration. The queries are performed with the SAM-R protocol.
 
 Important: Apply the remote calls to SAM policy to all computers except domain controllers. The policy can break application that uses AuthZ interface. Source
@@ -187,11 +207,13 @@ Important: Apply the remote calls to SAM policy to all computers except domain c
 It is needed to allow the Defender for Identity Directory service account for performing SAM-R. For configuring:
 
 Go to: Computer Configuration > Policies > Windows Settings > Security Settings ->Local Policies -> Security Operation
+
 Open the policy: Network access – Restrict clients allowed to make remote calls to SAM
 
-Allow the earlier created gMSA account
-Deploy the GPO to all computers except domain controllers
-Deleted Objects container permissions
+- Allow the earlier created gMSA account
+- Deploy the GPO to all computers except domain controllers
+- Deleted Objects container permissions
+  
 gMSA account should have read-only permissions on the Deleted Objects container in AD. This allows Defender for Identity to detect user deletions from your Active Directory.
 
 When not already enabled; enable the recycle bin feature and grant the MDI service account read and list permissions.
@@ -215,16 +237,21 @@ It is critical to enable enough capacity for Defender for Identity on the Domain
 Run the TriSizingTool.exe for some time and check the results. The Busy Packets/sec value is needed. Map the actual Busy Packets/sec value with the Packets per second recommendation.
 
 Download the Defender for Identity Sizing tool here https://aka.ms/mdi/sizingtool
+
 Check the recommended sensor sizing here https://aka.ms/mdi/sizingtool
+
 For 75-100k packages, the recommendation is 7.50 CPU/ Cores and 13.50 Memory/GB for only the sensor consumption.
 
 More information: Plan capacity for Microsoft Defender for Identity
 
 ******Hardware*****
+
 For healthy sensors, the following is recommended: https://learn.microsoft.com/en-us/defender-for-identity/capacity-planning#defender-for-identity-sensor-sizing
 
 No hyper-threaded cores
+
 Enable the Power Option to High Performance
+
 When running the sensor as a virtual machine, it is recommended to assign all memory to the machine at all times. Memory ballooning or Dynamic Memory is not recommended and can result in health issues.
 
 For Hyper-V ensure that Enable Dynamic Memory isn’t enabled for the VM. For VMware ensure that the amount of memory configured and the reserved memory is the same or configure – reserve all guest memory
@@ -232,11 +259,13 @@ For Hyper-V ensure that Enable Dynamic Memory isn’t enabled for the VM. For VM
 More information: Server specifications https://learn.microsoft.com/en-us/defender-for-identity/prerequisites#server-specifications
 
 *****IPv4 TSO offload*****
+
 When using Defender for Identity on VMware virtual machines, sometimes the health alert “Some network traffic is not being analyzed” is visible. For resolving the issue in Vmware it is recommended to disable IPv4 TSO Offload.
 
 Validate of LSO is enabled:
 
 Get-NetAdapterAdvancedProperty | Where-Object DisplayName -Match "^Large*"
+
 When the display value is reporting enabled for the Large Send offload it is recommended to disable LSO. (These actions might cause a brief loss of network connectivity and requires a reboot of the machine)
 
 Disable LSO:
@@ -257,6 +286,7 @@ Network Name Resolution (NNR) is one of the main components and critical for Def
 - NetBIOS (UDP port 137)
 - RDP (TCP port 3389) – only the first packet of Client hello
 - Queries the DNS server using reverse DNS lookup of the IP address (UDP 53)
+- 
 <img width="771" height="494" alt="image" src="https://github.com/user-attachments/assets/22606326-5739-48eb-b6a2-0d206dad9a74" />
 
 The secondary DNS lookup of the IP address is only performed when there is no response from any of the primary methods or there is a conflict in the response received from two or more primary methods.
@@ -268,6 +298,7 @@ NNR data is crucial for detecting the following threats:
 - Network mapping reconnaissance (DNS)
 
 More information: What is Network Name Resolution? https://learn.microsoft.com/en-us/defender-for-identity/nnr-policy
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ******Onboard Defender for Identity instance******
@@ -309,8 +340,7 @@ Important to allow network communication from the domain controllers to the Defe
 
 Check of the AATPSensor and AATPSensorUpdater services are running.
 
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ***Create Directory Service account (gMSA account)***
 Defender for Identity supports two types of Directory Service accounts (gMSA and regular user account) – it is heavily advised to use the more secure Group Managed Service Account in the environment. With the use of gMSA DSA Active Directory manages the creation and rotation of the account password.

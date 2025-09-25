@@ -1,5 +1,29 @@
 # Microsoft-Defender-for-Identity-MDI
 
+This project documents the end-to-end implementation of Microsoft Defender for Identity (MDI) across a hybrid Active Directory environment. It includes detailed steps for configuring all required prerequisites—covering audit policies, gMSA setup, sensor deployment, network resolution, and security hardening—to ensure optimal threat detection and response.
+
+Key highlights:
+
+✅ Full onboarding of MDI sensors on domain controllers
+
+🔐 Secure configuration of Group Managed Service Accounts (gMSA)
+
+📊 Audit policy tuning for critical event IDs (8004, 1644, 4662)
+
+🌐 Network Name Resolution (NNR) setup for accurate entity mapping
+
+⚙️ SAM-R and Deleted Objects container permissions for lateral movement detection
+
+🧠 Learning period and simulation playbooks for validating detection capabilities
+
+📈 Capacity planning and performance optimization for sensor health
+
+This implementation aligns with Microsoft’s best practices and is validated using readiness scripts and health alert monitoring. 
+
+Ideal for SOC teams, security architects, and compliance-driven environments seeking robust identity protection.
+
+=======================================================================================================================================
+
 Enabling Microsoft Defender for Identity (MDI) is a strategic move for protecting your hybrid Active Directory environment from identity-based threats. Here's a clear, step-by-step guide tailored for your enterprise-level deployment.
 
 What Is Defender for Identity?

@@ -364,6 +364,148 @@ Important to allow network communication from the domain controllers to the Defe
 
 Check of the AATPSensor and AATPSensorUpdater services are running.
 
+====================================================================================================================
+
+Configure Defender for Identity sensor
+After onboarding, the sensor is visible in the security.microsoft.com portal. Additional configuration is possible. For each sensor the following options are available:
+
+✅ Enable delayed updated
+✅Configure additional network adapters
+✅Configure description
+
+
+***Delayed update***
+Defender for Identity releases rapidly new updates and features. When used in production it can be advised to configure a sort of deployment ring for the initial test and larger gradual update process. With the delayed update it is possible to delay the updates automatically.
+
+<img width="1024" height="212" alt="image" src="https://github.com/user-attachments/assets/e2444fab-344b-498a-86c8-346e1608dde3" />
+
+Sensors not selected for the delayed update are updated automatically. When enabled Delayed update there is a delay of 72 hours.
+
+****Description****
+Add optional a description for the Defender for Identity sensor:
+<img width="1024" height="217" alt="image" src="https://github.com/user-attachments/assets/cc1e7f61-af83-4a9a-b35e-1c8af240af57" />
+
+
+***Validate***
+Validate MDI prerequisites :
+With the use of the test-MDIReadiness.ps1 script it is possible to detect misconfigured environments. The script will check for Object Auditing, Exchange Auditing, ADFS Auditing, Advanced Audit Policy Configuration/ NTLM auditing/ Power scheme/ Root certificates. Part of the result is the JSON file and HTML file.
+
+The script can be downloaded from GitHub https://github.com/microsoft/Microsoft-Defender-for-Identity/tree/main/Test-MdiReadiness
+
+<img width="1024" height="367" alt="image" src="https://github.com/user-attachments/assets/a2d7ff65-2de5-4b20-a6c1-49047af9317f" />
+
+****Validate sensor/ installation****
+For validating Defender for Identity sensors check the following items:
+
+✅ Check that the service; Azure Advanced Threat Protection sensor is correctly running.
+
+✅ Validate in the portal of the Defender for Identity sensor is correctly reporting.
+
+<img width="1024" height="381" alt="image" src="https://github.com/user-attachments/assets/5adefca5-e806-40a6-89ef-e3fb449d4f20" />
+
+The following logs can be used for the Sensor validation. Default Location: C:\Program Files\Azure Advanced Threat Protection Sensor\version number\Logs
+
+<img width="755" height="410" alt="image" src="https://github.com/user-attachments/assets/f9dca710-005f-4d4c-a637-726896aa72d5" />
+
+***Validate data***
+
+Validation of data is possible with the use of the security.microsoft.com portal. Use the search user or activity log (filtered for app Active Directory).
+
+The old Defender for Identity portal; https://portal.atp.azure.com/ can be still used for checking devices and other events. Search for users/ computers or other objects:
+
+<img width="1024" height="500" alt="image" src="https://github.com/user-attachments/assets/a6e533c8-7ebb-4abf-a06d-964c7c59aca6" />
+
+
+****Health alerts****
+
+Check the health alerts. After some time Defender for Identity reports possible health alerts based on the actual configuration. Examples of health alerts;
+
+🔐 All domain controllers are unreachable by a sensor
+🔐 All/Some of the capture network adapters on a sensor are not available
+🔐 Directory services user credentials are incorrect
+🔐 Low success rate of active name resolution
+🔐 No traffic received from domain controller
+🔐 Read-only user password to expire shortly
+🔐 Read-only user password expired
+🔐 Sensor outdated
+🔐 Sensor reached a memory resource limit
+🔐 Sensor service failed to start
+🔐 Sensor stopped communicating
+🔐 Some domain controllers are unreachable by a sensor
+🔐 Some Windows events are not being analyzed
+🔐 Some network traffic could not be analyzed
+🔐 Some ETW events are not being analyzed
+🔐 Sensor with Windows Server 2008 R2: Will be unsupported soon
+🔐 Sensor with Windows Server 2008 R2: Unsupported
+🔐Sensor has issues with packet capturing component
+
+For viewing the health alerts go to: Security.Microsoft.com -> Settings -> Identities -> Health issues.
+
+<img width="1024" height="222" alt="image" src="https://github.com/user-attachments/assets/a51772a7-2b5c-4663-b8ff-062ebc8fcb4e" />
+
+Recommended is to configure the Health issues notification for receiving any new health alerts. Open Health issues notification for the configuration and add the recipient email.
+
+<img width="1024" height="362" alt="image" src="https://github.com/user-attachments/assets/19289fd4-6d08-4fdf-9917-22c38be70be3" />
+
+
+****MDI Learning period****
+
+Defender for Identity requires a machine learning period. Important to give MDI some time for learning and detection of known behaviors and learning patterns.
+
+MDI uses the following learning period timeframe in days:
+
+<img width="747" height="640" alt="image" src="https://github.com/user-attachments/assets/172b1bb1-4f1b-4b4a-8a10-fb9bfd81578b" />
+
+Network mapping reconnaissance (DNS)
+
+Run the following command prompt on a workstation part of the domain:
+
+🌐 nslookup 
+🌐 server domain.local
+🌐 ls -d domain.local
+🌐 Result: Alert with the title; Network mapping reconnaissance (DNS)
+
+User and IP address reconnaissance
+
+Download netsess here http://netsess.exe%20msdemo-dc01.msdemo.local/ and run the following command prompt on a workstation part of the domain:
+
+NetSess.exe domain.local
+
+Result: Alert with the title; User and IP address reconnaissance (SMB)
+
+<img width="1024" height="392" alt="image" src="https://github.com/user-attachments/assets/305a49bc-47c9-422c-9b8f-5d89cf22af49" />
+
+User and group membership reconnaissance (SAMR)
+
+Run the following command line on a workstation part of the domain:
+
+<img width="1024" height="461" alt="image" src="https://github.com/user-attachments/assets/97aca948-4964-495a-b447-c5195bff76e4" />
+
+net user /domain 
+net group /domain
+net group "Domain Admins" /domain
+net group "Enterprise Admins" /domain 
+net group "Schema Admins" /domain
+Result: Alert with the title; User and group membership reconnaissance (SAMR)
+
+Malicious request of Data Protection API (DPAPI) master key
+
+Run the following command line on a workstation part of the domain:
+
+<img width="1024" height="348" alt="image" src="https://github.com/user-attachments/assets/e441e6ed-71bb-4e5f-a4c3-bfcd420c0f4d" />
+
+mimikatz # privilege::debug
+mimikatz # lsadump::backupkeys /system:m365securitylab.local /export 
+
+Result: Alert with the title; Malicious request of Data Protection API (DPAPI) master key
+
+<img width="1024" height="360" alt="image" src="https://github.com/user-attachments/assets/2800c62e-3f9d-4636-b9a4-053f381d2502" />
+
+More attack simulations can be found here: [Attack simulations for Microsoft Defender for Identity
+](https://learn.microsoft.com/en-us/defender-for-identity/playbooks)
+
+View the available alert overview here: [Microsoft Defender for Identity Security Alerts](https://learn.microsoft.com/en-us/defender-for-identity/alerts-overview)
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ***Create Directory Service account (gMSA account)***

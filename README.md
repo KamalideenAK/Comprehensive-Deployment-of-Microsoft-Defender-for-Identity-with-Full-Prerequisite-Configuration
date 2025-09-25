@@ -1,4 +1,6 @@
-# Microsoft-Defender-for-Identity-MDI- Enabling Microsoft Defender for Identity (MDI) is a strategic move for protecting your hybrid Active Directory environment from identity-based threats. Here's a clear, step-by-step guide tailored for your enterprise-level deployment.
+# Microsoft-Defender-for-Identity-MDI
+
+Enabling Microsoft Defender for Identity (MDI) is a strategic move for protecting your hybrid Active Directory environment from identity-based threats. Here's a clear, step-by-step guide tailored for your enterprise-level deployment.
 
 What Is Defender for Identity?
 MDI is a cloud-based security solution that monitors on-premises Active Directory signals to detect suspicious activities, compromised identities, and lateral movement.

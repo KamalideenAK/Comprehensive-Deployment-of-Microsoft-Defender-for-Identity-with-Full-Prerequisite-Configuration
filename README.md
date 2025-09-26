@@ -22,7 +22,7 @@ This implementation aligns with Microsoft’s best practices and is validated us
 
 Ideal for SOC teams, security architects, and compliance-driven environments seeking robust identity protection.
 
-=======================================================================================================================================
+=================================================================================
 
 Enabling Microsoft Defender for Identity (MDI) is a strategic move for protecting your hybrid Active Directory environment from identity-based threats. Here's a clear, step-by-step guide tailored for your enterprise-level deployment.
 
@@ -69,9 +69,10 @@ Defender for identity security posture assessment can detect vulnerabilities suc
 • Unsecure Account attributes
 • Unsecure SID history attributes
 
-============================================================================================================================================================================================================
+==============================================================================================
 
 *****Components*****
+
 Defender for Identity consist of the following components:
 
 🧠 Microsoft 365 Defender portal: MDI is integrated into the Microsoft 365 Defender portal.
@@ -80,14 +81,13 @@ Defender for Identity consist of the following components:
 
 🧠 Defender for Identity cloud services: Separate environment hosted in Azure. MDI cloud service runs on Azure infra and is connected with the security graph.
 
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+------------------------------------------------------------------------------------------------------
 
 Defender for Identity viewed from a simplified view. Image source: Microsoft
 
 <img width="1024" height="409" alt="image" src="https://github.com/user-attachments/assets/4c30cce4-70c7-4127-b6fd-6e746012f806" />
 
-=============================================================================================================================================================================================================
+=========================================================================================================
 
 The MDI Sensor contains a couple of core functionalities that are critical for getting MDI onboarded. The installed sensor is responsible for the following activity:
 
@@ -103,7 +103,7 @@ The MDI Sensor contains a couple of core functionalities that are critical for g
 
 6) Transfer relevant data to the Defender for Identity cloud service
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 
 🚀 Step-by-Step: Enable Microsoft Defender for Identity
 
@@ -120,31 +120,35 @@ II) Microsoft 365 A5/ E5/ G5
 
 III) Microsoft 365 A5/ E5/ G5/ F5 Security license.
 
-- Ensure you're licensed with Microsoft 365 E5, Microsoft 365 E5 Security, or have purchased Defender for Identity as an add-on.
+✔️  Ensure you're licensed with Microsoft 365 E5, Microsoft 365 E5 Security, or have purchased Defender for Identity as an add-on.
 
-- Confirm your domain controllers run Windows Server 2016 or later.
+✔️  Confirm your domain controllers run Windows Server 2016 or later.
 
-- Enable Windows Event Forwarding and configure audit policies as per Microsoft’s recommendations here (https://learn.microsoft.com/en-us/defender-for-identity/deploy/deploy-defender-identity)
+✔️  Enable Windows Event Forwarding and configure audit policies as per Microsoft’s recommendations here (https://learn.microsoft.com/en-us/defender-for-identity/deploy/deploy-defender-identity)
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
 
 🚀 Network
-- Sensors able to reach Defender for Identity Cloud service.
 
-- Specific ports allowed from Defender for Identity sensors in the environment.
+✔️ Sensors able to reach Defender for Identity Cloud service.
 
-- Network Name Resolution requirements enabled.
+✔️ Specific ports allowed from Defender for Identity sensors in the environment.
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+✔️ Network Name Resolution requirements enabled.
+
+----------------------------------------------------------------------------------------------------------
 
 🚀Audit
+
 ***Enable audit policies***
-- Enable audit policies for Event ID 8004
-- Enable audit policies for Event ID 1644
-- Enable object auditing
-- Enabled optionally exchange auditing
+
+✔️   Enable audit policies for Event ID 8004
+✔️   Enable audit policies for Event ID 1644
+✔️   Enable object auditing
+✔️   Enabled optionally exchange auditing
 
 *****Enable audit events****
+
 Defender for Identity relies heavily on Windows Event log entries to enhance detections and provide additional information. It is needed to assign the recommended audit event policy to the Domain Controllers.
 
 Recommended is to not use the built-in Domain Controllers policy and create a separate policy.
@@ -171,13 +175,15 @@ Audit policy	Subcategory	Triggers event IDs :
 
 🛡️ System	Audit Security System Extension	7045
 
-Additional configure Exchange auditing when Exchange is currently configured.
+🛡️ Additional configure Exchange auditing when Exchange is currently configured.
+
 
 Example configuration for audit computer account management:
 
 <img width="1024" height="543" alt="image" src="https://github.com/user-attachments/assets/6b379749-5169-4746-89b6-4f68688de35f" />
 
-Event ID 8004
+
+✔️ Event ID 8004
 
 Go to: Computer Configuration > Policies > Windows Settings > Security Settings ->Local Policies -> Security Operation
 
@@ -187,12 +193,16 @@ Configure the following security policies:
 
 Security policy setting	Value
 
-🛡️Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers	= Audit all
+🛡️ Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers	= Audit all
+
 🛡️ Network security: Restrict NTLM: Audit NTLM authentication in this domain = 	Enable all
+
 🛡️ Network security: Restrict NTLM: Audit Incoming NTLM Traffic =	Enable auditing for all accounts
 
 Event ID 1644
+
 Event ID 1644 is recommended for LDAP search events. Logging EventID 1644 can result in server performance impact. Important; the resource limitation part of the MDI sensor is not stopping the event collection. Make sure there are enough memory/ CPU and disk resources available.
+
 <img width="1024" height="348" alt="image" src="https://github.com/user-attachments/assets/a174feaf-0ae2-4eb9-93bb-87b4b7425943" />
 
 For Event 1644 is it needed to configure the following registry keys on the domain controllers:
@@ -205,6 +215,7 @@ For Event 1644 is it needed to configure the following registry keys on the doma
 "Search Time Threshold (msecs)"=dword:00000001
 
 Configure object auditing – 4662 events
+
 For collecting 4662 events – it is needed to configure object auditing on the following objects:
 
 - Descendant Group Objects
@@ -217,12 +228,13 @@ Microsoft described the enablement for object auditing for all descendant object
 
 Configure object auditing with reference to https://learn.microsoft.com/en-us/defender-for-identity/configure-windows-event-collection#configure-object-auditing
 
-=============================================================================================================================================================================================================
+===========================================================================================
 
 ******Additional Permissions*****
+
 Defender for Identity requires additional permissions for allowing remote calls to SAM and permissions to the selected object’s container in AD.
 
-Configure SAM-R
+🛡️ Configure SAM-R
 
 For lateral movement path detection, MDI relies on the SAM-R protocol configuration. The queries are performed with the SAM-R protocol.
 
@@ -230,9 +242,9 @@ Important: Apply the remote calls to SAM policy to all computers except domain c
 
 It is needed to allow the Defender for Identity Directory service account for performing SAM-R. For configuring:
 
-Go to: Computer Configuration > Policies > Windows Settings > Security Settings ->Local Policies -> Security Operation
+✔️ Go to: Computer Configuration > Policies > Windows Settings > Security Settings ->Local Policies -> Security Operation
 
-Open the policy: Network access – Restrict clients allowed to make remote calls to SAM
+✔️ Open the policy: Network access – Restrict clients allowed to make remote calls to SAM
 
 - Allow the earlier created gMSA account
 - Deploy the GPO to all computers except domain controllers
@@ -250,7 +262,7 @@ Adding permissions for the specific gmsaacountname:
 dsacls "CN=Deleted Objects,$((Get-ADDomain).DistinguishedName)" /takeownership
 dsacls "CN=Deleted Objects,$((Get-ADDomain).DistinguishedName)" /g "$((Get-ADDomain).NetBIOSName)\gmsaaccountname`$:LCRP"
 
-================================================================================================================================================================================================================
+=============================================================================================
 
 ***Capacity planning & hardware optimization***
 
@@ -260,27 +272,30 @@ It is critical to enable enough capacity for Defender for Identity on the Domain
 
 Run the TriSizingTool.exe for some time and check the results. The Busy Packets/sec value is needed. Map the actual Busy Packets/sec value with the Packets per second recommendation.
 
-Download the Defender for Identity Sizing tool here https://aka.ms/mdi/sizingtool
 
-Check the recommended sensor sizing here https://aka.ms/mdi/sizingtool
+✔️ Download the Defender for Identity Sizing tool here https://aka.ms/mdi/sizingtool
 
-For 75-100k packages, the recommendation is 7.50 CPU/ Cores and 13.50 Memory/GB for only the sensor consumption.
+✔️ Check the recommended sensor sizing here https://aka.ms/mdi/sizingtool
 
-More information: Plan capacity for Microsoft Defender for Identity
+✔️ For 75-100k packages, the recommendation is 7.50 CPU/ Cores and 13.50 Memory/GB for only the sensor consumption.
+
+🧠More information: Plan capacity for Microsoft Defender for Identity.
+
 
 ******Hardware*****
 
 For healthy sensors, the following is recommended: https://learn.microsoft.com/en-us/defender-for-identity/capacity-planning#defender-for-identity-sensor-sizing
 
-No hyper-threaded cores
+✔️ No hyper-threaded cores
 
-Enable the Power Option to High Performance
+✔️ Enable the Power Option to High Performance
 
-When running the sensor as a virtual machine, it is recommended to assign all memory to the machine at all times. Memory ballooning or Dynamic Memory is not recommended and can result in health issues.
+✔️ When running the sensor as a virtual machine, it is recommended to assign all memory to the machine at all times. Memory ballooning or Dynamic Memory is not recommended and can result in health issues.
 
-For Hyper-V ensure that Enable Dynamic Memory isn’t enabled for the VM. For VMware ensure that the amount of memory configured and the reserved memory is the same or configure – reserve all guest memory
+✔️ For Hyper-V ensure that Enable Dynamic Memory isn’t enabled for the VM. For VMware ensure that the amount of memory configured and the reserved memory is the same or configure – reserve all guest memory
 
 More information: Server specifications https://learn.microsoft.com/en-us/defender-for-identity/prerequisites#server-specifications
+
 
 *****IPv4 TSO offload*****
 
@@ -296,9 +311,10 @@ Disable LSO:
 
 Disable-NetAdapterLso -Name {name of adapter}
 
-===============================================================================================================================================================================================================
+==================================================================================================
 
-Network
+****Network****
+
 Defender for Identity requires some network requirements for portal connectivity and internal connectivity.
 
 Important is correct connectivity for internal ports and localhost ports. Microsoft explains are required ports here; [Defender for Identity Ports | Microsoft Docs.](https://learn.microsoft.com/en-us/defender-for-identity/prerequisites#ports)
@@ -323,9 +339,10 @@ NNR data is crucial for detecting the following threats:
 
 More information: What is Network Name Resolution? https://learn.microsoft.com/en-us/defender-for-identity/nnr-policy
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 
 ******Onboard Defender for Identity instance******
+
 The Defender for Identity cloud service, available within the U.S., Europe, and Asia, runs on Azure infrastructure. To use the cloud services; go to security.microsoft.com -> Settings -> Identities or go to security.microsoft.com/settings/identities
 
 When opening the identities section for the first time it will create the Defender for Identity instance.
@@ -354,13 +371,18 @@ Important to allow network communication from the domain controllers to the Defe
 
 <img width="1024" height="628" alt="image" src="https://github.com/user-attachments/assets/dcfa4198-f8e1-4413-8e98-ccc487cfafaa" />
 
+
 <img width="1024" height="631" alt="image" src="https://github.com/user-attachments/assets/ce5a3c2a-628f-41c5-9b8a-5636f600772b" />
+
 
 <img width="1024" height="621" alt="image" src="https://github.com/user-attachments/assets/df0fdc9d-b2a4-42f8-a7a4-ea6e72904156" />
 
+
 <img width="1024" height="622" alt="image" src="https://github.com/user-attachments/assets/59957097-e43b-468e-8be3-a470e9019eec" />
 
+
 <img width="1024" height="630" alt="image" src="https://github.com/user-attachments/assets/abe79256-0a32-494d-ac9a-da0eb4337d82" />
+
 
 Check of the AATPSensor and AATPSensorUpdater services are running.
 
@@ -370,11 +392,12 @@ Configure Defender for Identity sensor
 After onboarding, the sensor is visible in the security.microsoft.com portal. Additional configuration is possible. For each sensor the following options are available:
 
 ✅ Enable delayed updated
-✅Configure additional network adapters
-✅Configure description
+✅ Configure additional network adapters
+✅ Configure description
 
 
 ***Delayed update***
+
 Defender for Identity releases rapidly new updates and features. When used in production it can be advised to configure a sort of deployment ring for the initial test and larger gradual update process. With the delayed update it is possible to delay the updates automatically.
 
 <img width="1024" height="212" alt="image" src="https://github.com/user-attachments/assets/e2444fab-344b-498a-86c8-346e1608dde3" />
@@ -382,12 +405,16 @@ Defender for Identity releases rapidly new updates and features. When used in pr
 Sensors not selected for the delayed update are updated automatically. When enabled Delayed update there is a delay of 72 hours.
 
 ****Description****
+
 Add optional a description for the Defender for Identity sensor:
+
 <img width="1024" height="217" alt="image" src="https://github.com/user-attachments/assets/cc1e7f61-af83-4a9a-b35e-1c8af240af57" />
 
 
 ***Validate***
+
 Validate MDI prerequisites :
+
 With the use of the test-MDIReadiness.ps1 script it is possible to detect misconfigured environments. The script will check for Object Auditing, Exchange Auditing, ADFS Auditing, Advanced Audit Policy Configuration/ NTLM auditing/ Power scheme/ Root certificates. Part of the result is the JSON file and HTML file.
 
 The script can be downloaded from GitHub https://github.com/microsoft/Microsoft-Defender-for-Identity/tree/main/Test-MdiReadiness
@@ -395,6 +422,7 @@ The script can be downloaded from GitHub https://github.com/microsoft/Microsoft-
 <img width="1024" height="367" alt="image" src="https://github.com/user-attachments/assets/a2d7ff65-2de5-4b20-a6c1-49047af9317f" />
 
 ****Validate sensor/ installation****
+
 For validating Defender for Identity sensors check the following items:
 
 ✅ Check that the service; Azure Advanced Threat Protection sensor is correctly running.
@@ -421,29 +449,50 @@ The old Defender for Identity portal; https://portal.atp.azure.com/ can be still
 Check the health alerts. After some time Defender for Identity reports possible health alerts based on the actual configuration. Examples of health alerts;
 
 🔐 All domain controllers are unreachable by a sensor
+
 🔐 All/Some of the capture network adapters on a sensor are not available
+
 🔐 Directory services user credentials are incorrect
+
 🔐 Low success rate of active name resolution
+
 🔐 No traffic received from domain controller
+
 🔐 Read-only user password to expire shortly
+
 🔐 Read-only user password expired
+
 🔐 Sensor outdated
+
 🔐 Sensor reached a memory resource limit
+
 🔐 Sensor service failed to start
+
 🔐 Sensor stopped communicating
+
 🔐 Some domain controllers are unreachable by a sensor
+
 🔐 Some Windows events are not being analyzed
+
 🔐 Some network traffic could not be analyzed
+
 🔐 Some ETW events are not being analyzed
+
 🔐 Sensor with Windows Server 2008 R2: Will be unsupported soon
+
 🔐 Sensor with Windows Server 2008 R2: Unsupported
+
 🔐Sensor has issues with packet capturing component
+
 
 For viewing the health alerts go to: Security.Microsoft.com -> Settings -> Identities -> Health issues.
 
+
 <img width="1024" height="222" alt="image" src="https://github.com/user-attachments/assets/a51772a7-2b5c-4663-b8ff-062ebc8fcb4e" />
 
+
 Recommended is to configure the Health issues notification for receiving any new health alerts. Open Health issues notification for the configuration and add the recipient email.
+
 
 <img width="1024" height="362" alt="image" src="https://github.com/user-attachments/assets/19289fd4-6d08-4fdf-9917-22c38be70be3" />
 
@@ -475,9 +524,11 @@ Result: Alert with the title; User and IP address reconnaissance (SMB)
 
 <img width="1024" height="392" alt="image" src="https://github.com/user-attachments/assets/305a49bc-47c9-422c-9b8f-5d89cf22af49" />
 
+
 User and group membership reconnaissance (SAMR)
 
 Run the following command line on a workstation part of the domain:
+
 
 <img width="1024" height="461" alt="image" src="https://github.com/user-attachments/assets/97aca948-4964-495a-b447-c5195bff76e4" />
 
@@ -492,9 +543,12 @@ Malicious request of Data Protection API (DPAPI) master key
 
 Run the following command line on a workstation part of the domain:
 
+
 <img width="1024" height="348" alt="image" src="https://github.com/user-attachments/assets/e441e6ed-71bb-4e5f-a4c3-bfcd420c0f4d" />
 
+
 mimikatz # privilege::debug
+
 mimikatz # lsadump::backupkeys /system:m365securitylab.local /export 
 
 Result: Alert with the title; Malicious request of Data Protection API (DPAPI) master key
@@ -504,11 +558,13 @@ Result: Alert with the title; Malicious request of Data Protection API (DPAPI) m
 More attack simulations can be found here: [Attack simulations for Microsoft Defender for Identity
 ](https://learn.microsoft.com/en-us/defender-for-identity/playbooks)
 
+
 View the available alert overview here: [Microsoft Defender for Identity Security Alerts](https://learn.microsoft.com/en-us/defender-for-identity/alerts-overview)
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ***Create Directory Service account (gMSA account)***
+
 Defender for Identity supports two types of Directory Service accounts (gMSA and regular user account) – it is heavily advised to use the more secure Group Managed Service Account in the environment. With the use of gMSA DSA Active Directory manages the creation and rotation of the account password.
 
 For more information and multi-forest environments see; [Microsoft Defender for Identity Directory Service account recommendations | Microsoft Docs](https://learn.microsoft.com/en-us/defender-for-identity/deploy/directory-service-accounts) 
